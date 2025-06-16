@@ -8,8 +8,7 @@ find_package(rclcpp REQUIRED)
 find_package(tf2_ros REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(gz-plugin2 REQUIRED)
-find_package(fixposition_gnss_tf REQUIRED)
-find_package(Eigen3 REQUIRED) # Add this line to find Eigen
+find_package(Eigen3 REQUIRED)
 find_package(tf2 REQUIRED)
 find_package(tf2_geometry_msgs REQUIRED)
 
@@ -35,24 +34,10 @@ include_directories(
   /opt/ros/jazzy/opt/sdformat_vendor/include/gz/sdformat14
 )
 
-add_library(${PROJECT_NAME} SHARED src/gps_fix_model.cpp)
+add_library(${PROJECT_NAME} SHARED src/gps_fix_simulator.cpp)
 
 target_link_libraries(${PROJECT_NAME}
   gz-plugin2::gz-plugin2
-  #fixposition_gnss_tf::fixposition_gnss_tf
-  #gz-common5
-  #gz-math7
-  #gz-plugin2
-  #gz-sim8-core
-  #gz-transport13
-  #gz-msgs10
-  #gz-utils2
-  #gz-physics7
-  #gz-sensors8
-  #gz-rendering8
-  #gz-fuel_tools9
-  #gz-gui8
-  #sdfdom14
 )
 
 ament_target_dependencies(${PROJECT_NAME}
@@ -61,7 +46,6 @@ ament_target_dependencies(${PROJECT_NAME}
   tf2_ros
   tf2_geometry_msgs
   geometry_msgs
-  fixposition_gnss_tf
 )
 
 install(TARGETS ${PROJECT_NAME}
