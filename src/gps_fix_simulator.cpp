@@ -160,8 +160,8 @@ namespace gps_fix_simulator
         tf2::Transform T_ecef_base = H * K;
         geometry_msgs::msg::TransformStamped tf_msg;
         tf_msg.header.stamp = now;
-        tf_msg.header.frame_id = this->parentFrame;  // TF_ECEF
-        tf_msg.child_frame_id = this->childFrame;    // base_link / TF_POI
+        tf_msg.header.frame_id = this->parentFrame;
+        tf_msg.child_frame_id = this->childFrame;
         tf_msg.transform = tf2::toMsg(T_ecef_base);
         this->tf_broadcaster->sendTransform(tf_msg);
         last_tf_broadcast_time = now;
