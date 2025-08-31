@@ -53,7 +53,9 @@ namespace gps_fix_simulator
         this->modelEntity = entity;
         this->modelName = model.Name(ecm);
         this->link = gz::sim::Link(model.LinkByName(ecm, this->linkName));
-      } else {
+      } 
+      else 
+      {
         // 2) World-scoped fallback: allow optional <model_name> in SDF
         const std::string modelNameParam =
             sdf->Get<std::string>("model_name", "").first;
@@ -66,19 +68,6 @@ namespace gps_fix_simulator
               this->modelEntity = me;
               this->modelName = m.Name(ecm);
               this->link = gz::sim::Link(m.LinkByName(ecm, this->linkName));
-              break;
-            }
-          }
-        } else {
-          // 3) Last resort: find the first model that contains the requested link
-          auto modelEntities = ecm.EntitiesByComponents(gz::sim::components::Model());
-          for (auto me : modelEntities) {
-            gz::sim::Model m(me);
-            auto l = gz::sim::Link(m.LinkByName(ecm, this->linkName));
-            if (l.Valid(ecm)) {
-              this->modelEntity = me;
-              this->modelName = m.Name(ecm);
-              this->link = l;
               break;
             }
           }
