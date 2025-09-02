@@ -1,4 +1,0 @@
-link_name: bigbot::base_link
-frame_fp_enu: FP_ENU
-frame_tf_poi: TF_POI
-frame_tf_ecef: TF_ECEF
