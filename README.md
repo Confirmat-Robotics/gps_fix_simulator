@@ -1,6 +1,8 @@
 # GPS Fix Simulator Plugin for Gazebo Harmonic
 
-This plugin simulates GPS fix and publishes relevant transforms for robot models in Gazebo Harmonic. It is designed to work with ROS 2 and supports both model-scoped and world-scoped usage.
+This plugin simulates GPS+orientation sensor and publishes relevant transforms for robot models in Gazebo Harmonic. It is designed to work with ROS 2 and supports both model-scoped and world-scoped usage.
+
+This is used to simulate a Fixposition Vision-RTK device which gives GPS location and orientation of a FP_POI (point of interest) wrt a FP_ENU (which is defined at startup of the device once a 'GPS fix' is obtained).
 
 ## Features
 
