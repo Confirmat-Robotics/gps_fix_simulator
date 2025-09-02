@@ -1,11 +1,11 @@
 <?xml version="1.0"?>
 <package format="3">
   <name>gps_fix_simulator</name>
-  <version>0.0.1</version>
+  <version>1.0.0</version>
   <description>Gazebo plugin to publish TFs from ECEF to POI and FP_ENU</description>
 
   <maintainer email="edward@confirmat.nl">Edward Hage</maintainer>
-  <license>MIT</license>
+  <license>Apache 2.0</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 

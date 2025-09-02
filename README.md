@@ -67,17 +67,6 @@ Add the plugin block inside your `<world>` tag in the world SDF file, and specif
 
 - For multi-robot simulations, always attach the plugin at model scope (inside each robot's SDF).
 - If using world scope, you must specify `<model_name>`, and only one robot will be supported per plugin instance.
-- The plugin requires ROS 2 and Gazebo Harmonic (gz-sim).
+- **This plugin is used in the `bigbot_gazebo` simulation package.**
 
-## Example
-
-**Spawning a robot with the plugin:**
-```bash
-ros2 launch bigbot_gazebo spawn_robot.launch.py robot_name:=bigbot2
-```
-
-**Verifying plugin output:**
-- Check for `[GPSFixSimulatorPlugin] Attached to model ...` in the Gazebo logs.
-
----
 
