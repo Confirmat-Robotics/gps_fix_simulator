@@ -17,7 +17,7 @@ include_directories(
   ${rclcpp_INCLUDE_DIRS}
   ${tf2_ros_INCLUDE_DIRS}
   ${geometry_msgs_INCLUDE_DIRS}
-  ${EIGEN3_INCLUDE_DIR} # Add Eigen include directory
+  ${EIGEN3_INCLUDE_DIR}
 
   /opt/ros/jazzy/opt/gz_common_vendor/include/gz/common5
   /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10

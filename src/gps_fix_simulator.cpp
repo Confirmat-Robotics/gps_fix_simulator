@@ -47,49 +47,52 @@ namespace gps_fix_simulator
       this->parentFrame = sdf->Get<std::string>("parent_frame", "TF_ECEF").first;
       this->enuFrame = sdf->Get<std::string>("enu_frame", "FP_ENU").first;
 
-      // Wait for the model to be spawned
-      auto modelEntities = ecm.EntitiesByComponents(gz::sim::components::Model());
-      for (auto modelEntity : modelEntities)
+      // 1) Preferred: plugin attached at model scope -> use the passed entity
+      gz::sim::Model model(entity);
+      if (model.Valid(ecm)) {
+        this->modelEntity = entity;
+        this->modelName = model.Name(ecm);
+        this->link = gz::sim::Link(model.LinkByName(ecm, this->linkName));
+      } 
+      else 
       {
-        auto model = gz::sim::Model(modelEntity);
-        std::string modelName = model.Name(ecm);
-        if (modelName == "bigbot")
-        {
-          this->modelEntity = modelEntity;
-          this->link = gz::sim::Link(model.LinkByName(ecm, this->linkName));
-          std::cout << "[GPSFixSimulatorPlugin] Found model: " << modelName << std::endl;
+        // 2) World-scoped fallback: allow optional <model_name> in SDF
+        const std::string modelNameParam =
+            sdf->Get<std::string>("model_name", "").first;
 
-          if (this->link.Valid(ecm))
-          {
-            std::cout << "[GPSFixSimulatorPlugin] Found link: " << this->linkName << std::endl;
+        if (!modelNameParam.empty()) {
+          auto modelEntities = ecm.EntitiesByComponents(gz::sim::components::Model());
+          for (auto me : modelEntities) {
+            gz::sim::Model m(me);
+            if (m.Name(ecm) == modelNameParam) {
+              this->modelEntity = me;
+              this->modelName = m.Name(ecm);
+              this->link = gz::sim::Link(m.LinkByName(ecm, this->linkName));
+              break;
+            }
           }
-          else
-          {
-            std::cerr << "[GPSFixSimulatorPlugin] Link '" << this->linkName << "' not found in model '" << modelName << "'" << std::endl;
-          }
-          break;
         }
       }
 
-      // Validate modelEntity and link
-      if (this->modelEntity == gz::sim::kNullEntity || !this->link.Valid(ecm))
-      {
-        std::cerr << "[GPSFixSimulatorPlugin] Failed to find model 'bigbot' or link '" << this->linkName << "'" << std::endl;
+      if (this->modelEntity == gz::sim::kNullEntity || !this->link.Valid(ecm)) {
+        std::cerr << "[GPSFixSimulatorPlugin] Failed to find model/link. "
+                  << "model='" << (this->modelName.empty() ? "<unknown>" : this->modelName)
+                  << "' link='" << this->linkName << "'\n";
         return;
       }
+
+      std::cout << "[GPSFixSimulatorPlugin] Attached to model '" << this->modelName
+                << "', link '" << this->linkName << "'\n";
 
       // Initialize ROS2
       this->ros_context = std::make_shared<rclcpp::Context>();
       this->ros_context->init(0, nullptr);
-
       rclcpp::NodeOptions options;
       options.context(this->ros_context);
       this->node = std::make_shared<rclcpp::Node>("gps_fix_simulator_node", options);
       this->tf_broadcaster = std::make_shared<tf2_ros::TransformBroadcaster>(this->node);
 
-      this->ros_thread = std::thread([this]() {
-        rclcpp::spin(this->node);
-      });
+      this->ros_thread = std::thread([this]() { rclcpp::spin(this->node); });
     }
 
     void PreUpdate(const gz::sim::UpdateInfo &info,
@@ -195,9 +198,10 @@ namespace gps_fix_simulator
     }
 
   private:
-
     gz::sim::Entity modelEntity{gz::sim::kNullEntity};
     gz::sim::Link link;
+    std::string modelName;
+
     std::shared_ptr<rclcpp::Context> ros_context;
     std::shared_ptr<rclcpp::Node> node;
     std::shared_ptr<tf2_ros::TransformBroadcaster> tf_broadcaster;
